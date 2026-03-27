@@ -44,7 +44,7 @@ export async function exportPdf (options: ExportOptions) {
       }),
       docThemePlugin(theme)
     ],
-    server: { port },
+    server: { port, fs: { allow: [packageRoot] } },
     logLevel: 'silent'
   })
 

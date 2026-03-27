@@ -40,7 +40,10 @@ export async function startDev (options: DevOptions) {
     ],
     server: {
       port: options.port,
-      open: true
+      open: true,
+      fs: {
+        allow: [packageRoot]
+      }
     }
   })
 
