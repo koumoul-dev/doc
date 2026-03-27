@@ -33,7 +33,7 @@ export async function exportPdf (options: ExportOptions) {
   const server = await createServer({
     root: packageRoot,
     plugins: [
-      UnoCSS(),
+      UnoCSS({ configFile: resolve(packageRoot, 'uno.config.ts') }),
       vue(),
       docMarkdownPlugin(docFile),
       docConfigPlugin({

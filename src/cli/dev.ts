@@ -27,7 +27,7 @@ export async function startDev (options: DevOptions) {
   const server = await createServer({
     root: packageRoot,
     plugins: [
-      UnoCSS(),
+      UnoCSS({ configFile: resolve(packageRoot, 'uno.config.ts') }),
       vue(),
       docMarkdownPlugin(docFile),
       docConfigPlugin({
