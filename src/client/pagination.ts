@@ -100,7 +100,8 @@ export function usePagination (): PaginationState {
       const indices = pages[p]
       if (indices.length < 2) continue
       const lastIdx = indices[indices.length - 1]
-      const tag = elements[lastIdx]?.tagName
+      const el = elements[lastIdx]
+      const tag = el?.firstElementChild?.tagName || el?.tagName
       if (tag && /^H[1-6]$/.test(tag)) {
         // Move the heading to the next page
         indices.pop()
