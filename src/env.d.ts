@@ -1,3 +1,9 @@
+declare module 'markdown-it-container' {
+  import type MarkdownIt from 'markdown-it'
+  const container: MarkdownIt.PluginWithOptions
+  export default container
+}
+
 declare module 'virtual:doc-content' {
   export const frontmatter: import('./types.ts').Frontmatter
   export const blocks: string[]

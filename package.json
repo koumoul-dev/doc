@@ -4,17 +4,21 @@
   "description": "Preview and export professional A4 documents from markdown",
   "type": "module",
   "engines": {
-    "node": ">=23.6.0"
+    "node": ">=18.0.0"
   },
   "bin": {
     "koumoul-doc": "./bin/cli.mjs"
   },
   "files": [
     "bin",
-    "src",
+    "dist",
+    "src/client",
+    "src/themes",
     "index.html"
   ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "dev": "node src/cli/index.ts dev example.md",
     "lint": "eslint",
     "typecheck": "vue-tsc --noEmit",
