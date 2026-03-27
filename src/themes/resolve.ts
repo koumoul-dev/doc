@@ -6,16 +6,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export function resolveTheme (name: string): DocTheme {
   switch (name) {
-    case 'koumoul':
+    case 'minimal':
+      return {
+        name: 'minimal',
+        styles: [resolve(__dirname, 'minimal/style.css')]
+      }
+    default:
       return {
         name: 'koumoul',
         styles: [resolve(__dirname, 'koumoul/style.css')],
         logo: resolve(__dirname, 'koumoul/logo.png')
-      }
-    default:
-      return {
-        name: 'default',
-        styles: [resolve(__dirname, 'default/style.css')]
       }
   }
 }

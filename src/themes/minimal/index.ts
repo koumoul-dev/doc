@@ -1,7 +1,7 @@
 import type { DocTheme } from '../../types.ts'
 
 const theme: DocTheme = {
-  name: 'default',
+  name: 'minimal',
   styles: [new URL('./style.css', import.meta.url).pathname],
   cssVariables: {
     '--doc-primary': '#333333',

@@ -26,7 +26,7 @@ export async function exportPdf (options: ExportOptions) {
   const raw = readFileSync(docFile, 'utf-8')
   const { frontmatter } = parseDocument(raw)
   const title = frontmatter.title || basename(docFile, '.md')
-  const theme = resolveTheme(frontmatter.theme || 'default')
+  const theme = resolveTheme(frontmatter.theme || 'koumoul')
 
   // Start a temporary Vite server
   const port = 15173 + Math.floor(Math.random() * 1000)

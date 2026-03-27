@@ -102,10 +102,10 @@ graph TD
 
 Two built-in themes are available:
 
-- **default** -- neutral styling
-- **koumoul** -- branded theme with custom colors and logo
+- **koumoul** (default) -- branded theme with custom colors and logo
+- **minimal** -- neutral styling
 
-Set the theme via the `theme` frontmatter field (defaults to `default`). Themes control colors, fonts, and optional logo display on the title page via CSS variables.
+Set the theme via the `theme` frontmatter field (defaults to `koumoul`). Themes control colors, fonts, and optional logo display on the title page via CSS variables.
 
 ## Development
 

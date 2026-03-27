@@ -22,7 +22,7 @@ export async function startDev (options: DevOptions) {
   const docFile = resolve(process.cwd(), options.file)
   const raw = readFileSync(docFile, 'utf-8')
   const { frontmatter } = parseDocument(raw)
-  const theme = resolveTheme(frontmatter.theme || 'default')
+  const theme = resolveTheme(frontmatter.theme || 'koumoul')
 
   const server = await createServer({
     root: packageRoot,
