@@ -1,0 +1,102 @@
+<template>
+  <!-- Hidden measurement container — rendered first to measure block heights -->
+  <div v-if="!pagination.ready.value" ref="measureEl" class="document-raw">
+    <TitlePage :frontmatter="frontmatter" />
+    <TocPage v-if="hasToc" :headings="headings" />
+    <div ref="contentEl" class="doc-content">
+      <div v-for="(block, i) in blocks" :key="i" v-html="block" />
+    </div>
+    <MermaidBlock @done="onMermaidDone" />
+  </div>
+
+  <!-- Paginated output -->
+  <div v-else class="document">
+    <!-- Title page -->
+    <div v-if="true" class="a4-page">
+      <TitlePage :frontmatter="frontmatter" />
+      <PageFooter :title="frontmatter.title || ''" :page="1" :total="pagination.totalPages.value" />
+    </div>
+
+    <!-- TOC page -->
+    <div v-if="hasToc" class="a4-page">
+      <TocPage :headings="headings" />
+      <PageFooter :title="frontmatter.title || ''" :page="2" :total="pagination.totalPages.value" />
+    </div>
+
+    <!-- Content pages -->
+    <div v-for="(page, pi) in pagination.contentPages.value" :key="pi" class="a4-page">
+      <div class="doc-content">
+        <div v-for="idx in page.blockIndices" :key="idx" v-html="blocks[idx]" />
+      </div>
+      <PageFooter
+        :title="frontmatter.title || ''"
+        :page="fixedPageCount + pi + 1"
+        :total="pagination.totalPages.value"
+      />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, nextTick, onMounted, ref } from 'vue'
+import { frontmatter, blocks } from 'virtual:doc-content'
+import TitlePage from './TitlePage.vue'
+import TocPage from './TocPage.vue'
+import MermaidBlock from './MermaidBlock.vue'
+import PageFooter from './PageFooter.vue'
+import { usePagination } from './pagination.ts'
+import type { TocHeading } from './TocPage.vue'
+
+const headings = ref<TocHeading[]>([])
+const measureEl = ref<HTMLElement>()
+const contentEl = ref<HTMLElement>()
+const pagination = usePagination()
+
+const hasToc = computed(() => frontmatter.toc !== false)
+const fixedPageCount = computed(() => 1 + (hasToc.value ? 1 : 0))
+
+let mermaidDone = false
+let isMounted = false
+
+function extractHeadings () {
+  if (!contentEl.value) return
+  const els = contentEl.value.querySelectorAll('h2, h3, h4, h5, h6')
+  headings.value = Array.from(els).map(el => ({
+    level: parseInt(el.tagName[1]),
+    text: el.textContent || '',
+    id: el.id
+  }))
+}
+
+async function waitForImages (): Promise<void> {
+  if (!measureEl.value) return
+  const images = measureEl.value.querySelectorAll('img')
+  await Promise.all(Array.from(images).map(img => {
+    if (img.complete) return Promise.resolve()
+    return new Promise<void>(resolve => {
+      img.addEventListener('load', () => resolve(), { once: true })
+      img.addEventListener('error', () => resolve(), { once: true })
+    })
+  }))
+}
+
+async function runPagination () {
+  if (!isMounted || !mermaidDone || !contentEl.value) return
+
+  await nextTick()
+  extractHeadings()
+  await waitForImages()
+
+  pagination.paginate(contentEl.value, blocks, true, hasToc.value)
+}
+
+function onMermaidDone () {
+  mermaidDone = true
+  runPagination()
+}
+
+onMounted(() => {
+  isMounted = true
+  runPagination()
+})
+</script>

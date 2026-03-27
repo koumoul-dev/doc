@@ -1,0 +1,7 @@
+:root {
+  --doc-primary: #333333;
+  --doc-primary-light: #666666;
+  --doc-background: #ffffff;
+  --doc-text: #333333;
+  --doc-font: system-ui, -apple-system, sans-serif;
+}

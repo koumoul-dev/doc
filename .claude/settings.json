@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:vite.dev)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:sli.dev)",
+      "WebSearch",
+      "mcp__*"
+    ],
+    "deny": []
+  },
+  "enabledMcpjsonServers": [
+    "playwright-test"
+  ],
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
+  },
+  "sandbox": {
+    "enabled": true,
+    "autoAllowBashIfSandboxed": true
+  }
+}

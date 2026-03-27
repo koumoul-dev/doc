@@ -1,0 +1,46 @@
+{
+  "name": "@koumoul/doc",
+  "version": "0.1.0",
+  "description": "Preview and export professional A4 documents from markdown",
+  "type": "module",
+  "engines": {
+    "node": ">=23.6.0"
+  },
+  "bin": {
+    "koumoul-doc": "./bin/cli.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "index.html"
+  ],
+  "scripts": {
+    "dev": "node src/cli/index.ts dev example.md",
+    "lint": "eslint",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "node --test tests/unit/**/*.test.ts",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "cac": "^7.0.0",
+    "gray-matter": "^4.0.0",
+    "markdown-it": "^14.1.0",
+    "markdown-it-container": "^4.0.0",
+    "mermaid": "^11.13.0",
+    "puppeteer": "^24.40.0",
+    "shiki": "^4.0.2",
+    "unocss": "^66.6.7",
+    "vite": "^6.3.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.0",
+    "@types/markdown-it": "^14.1.0",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "neostandard": "^0.13.0",
+    "typescript": "^5.8.0",
+    "vue-tsc": "^2.0.0"
+  }
+}
