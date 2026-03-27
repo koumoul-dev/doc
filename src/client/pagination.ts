@@ -19,23 +19,32 @@ export interface PageAssignment {
   blockIndices: number[]
 }
 
+/** A TOC page holds a range of heading indices and whether to show the title */
+export interface TocPageAssignment {
+  headingIndices: number[]
+  showTitle: boolean
+}
+
 export interface PaginationState {
   /** Reactive array of content page assignments (excludes title/toc pages) */
   contentPages: Ref<PageAssignment[]>
+  /** Reactive array of TOC page assignments */
+  tocPages: Ref<TocPageAssignment[]>
   /** Total page count including title and toc */
   totalPages: Ref<number>
   /** Whether pagination has been computed */
   ready: Ref<boolean>
   /** Run pagination measurement. Call after mermaid + images are ready. */
-  paginate: (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, hasTocPage: boolean) => void
+  paginate: (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement) => void
 }
 
 export function usePagination (): PaginationState {
   const contentPages = ref<PageAssignment[]>([])
+  const tocPages = ref<TocPageAssignment[]>([])
   const totalPages = ref(0)
   const ready = ref(false)
 
-  function paginate (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, hasTocPage: boolean): void {
+  function paginate (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement): void {
     // Get all rendered block elements from the content container
     const elements = Array.from(contentEl.children) as HTMLElement[]
 
@@ -57,7 +66,62 @@ export function usePagination (): PaginationState {
     const maxH = heightRef.getBoundingClientRect().height
     measurer.removeChild(heightRef)
 
-    // Distribute blocks into pages by measurement
+    // Paginate TOC if present
+    const tocPagesResult: TocPageAssignment[] = []
+    if (tocEl) {
+      const titleEl = tocEl.querySelector('.toc-title')
+      const listItems = Array.from(tocEl.querySelectorAll('.toc-list li'))
+
+      if (listItems.length > 0) {
+        tocPagesResult.push({ headingIndices: [], showTitle: true })
+
+        // Clone title into measurer for first page
+        if (titleEl) {
+          measurer.appendChild(titleEl.cloneNode(true))
+        }
+
+        // Create a ul to accumulate items for measurement
+        let currentUl = document.createElement('ul')
+        currentUl.className = 'toc-list'
+        copyComputedListStyles(tocEl.querySelector('.toc-list'), currentUl)
+        measurer.appendChild(currentUl)
+
+        for (let i = 0; i < listItems.length; i++) {
+          const clone = listItems[i].cloneNode(true) as HTMLElement
+          currentUl.appendChild(clone)
+
+          if (measurer.scrollHeight > maxH) {
+            currentUl.removeChild(clone)
+
+            if (tocPagesResult[tocPagesResult.length - 1].headingIndices.length > 0) {
+              // Start new TOC page
+              tocPagesResult.push({ headingIndices: [], showTitle: false })
+              clearChildren(measurer)
+              currentUl = document.createElement('ul')
+              currentUl.className = 'toc-list'
+              copyComputedListStyles(tocEl.querySelector('.toc-list'), currentUl)
+              measurer.appendChild(currentUl)
+              i-- // retry this item on the new page
+            } else {
+              // First item on fresh page — accept even if too tall
+              currentUl.appendChild(clone)
+              tocPagesResult[tocPagesResult.length - 1].headingIndices.push(i)
+              clearChildren(measurer)
+              currentUl = document.createElement('ul')
+              currentUl.className = 'toc-list'
+              copyComputedListStyles(tocEl.querySelector('.toc-list'), currentUl)
+              measurer.appendChild(currentUl)
+            }
+          } else {
+            tocPagesResult[tocPagesResult.length - 1].headingIndices.push(i)
+          }
+        }
+
+        clearChildren(measurer)
+      }
+    }
+
+    // Distribute content blocks into pages by measurement
     const pages: number[][] = [[]]
 
     for (let i = 0; i < elements.length; i++) {
@@ -115,10 +179,11 @@ export function usePagination (): PaginationState {
     // Filter empty pages and build assignments
     const filtered = pages.filter(p => p.length > 0)
     contentPages.value = filtered.map(indices => ({ blockIndices: indices }))
+    tocPages.value = tocPagesResult.filter(p => p.headingIndices.length > 0)
 
     let count = 0
     if (hasTitlePage) count++
-    if (hasTocPage) count++
+    count += tocPages.value.length
     count += filtered.length
     totalPages.value = count
 
@@ -128,7 +193,18 @@ export function usePagination (): PaginationState {
     document.documentElement.dataset.paginationDone = 'true'
   }
 
-  return { contentPages, totalPages, ready, paginate }
+  return { contentPages, tocPages, totalPages, ready, paginate }
+}
+
+function copyComputedListStyles (source: Element | null, target: HTMLElement): void {
+  target.style.listStyle = 'none'
+  target.style.padding = '0'
+  target.style.margin = '0'
+  if (source) {
+    const computed = window.getComputedStyle(source)
+    target.style.fontSize = computed.fontSize
+    target.style.lineHeight = computed.lineHeight
+  }
 }
 
 function clearChildren (el: HTMLElement): void {

@@ -1,6 +1,6 @@
 <template>
   <div v-if="headings.length > 0" class="toc-page">
-    <h2 class="toc-title">Table des matières</h2>
+    <h2 v-if="showTitle" class="toc-title">Table des matières</h2>
     <ul class="toc-list">
       <li
         v-for="(heading, i) in headings"
@@ -20,7 +20,12 @@ export interface TocHeading {
   id: string
 }
 
-const { headings } = defineProps<{ headings: TocHeading[] }>()
+withDefaults(defineProps<{
+  headings: TocHeading[]
+  showTitle?: boolean
+}>(), {
+  showTitle: true
+})
 
 </script>
 

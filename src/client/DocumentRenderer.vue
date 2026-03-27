@@ -2,7 +2,9 @@
   <!-- Hidden measurement container — rendered first to measure block heights -->
   <div v-if="!pagination.ready.value" ref="measureEl" class="document-raw">
     <TitlePage :frontmatter="frontmatter" />
-    <TocPage v-if="hasToc" :headings="headings" />
+    <div v-if="hasToc" ref="tocEl">
+      <TocPage :headings="headings" />
+    </div>
     <div ref="contentEl" class="doc-content">
       <div v-for="(block, i) in blocks" :key="i" v-html="block" />
     </div>
@@ -17,10 +19,13 @@
       <PageFooter :title="frontmatter.title || ''" :page="1" :total="pagination.totalPages.value" />
     </div>
 
-    <!-- TOC page -->
-    <div v-if="hasToc" class="a4-page">
-      <TocPage :headings="headings" />
-      <PageFooter :title="frontmatter.title || ''" :page="2" :total="pagination.totalPages.value" />
+    <!-- TOC pages -->
+    <div v-for="(tocPage, ti) in pagination.tocPages.value" :key="'toc-' + ti" class="a4-page">
+      <TocPage
+        :headings="tocPage.headingIndices.map(i => headings[i])"
+        :show-title="tocPage.showTitle"
+      />
+      <PageFooter :title="frontmatter.title || ''" :page="2 + ti" :total="pagination.totalPages.value" />
     </div>
 
     <!-- Content pages -->
@@ -30,7 +35,7 @@
       </div>
       <PageFooter
         :title="frontmatter.title || ''"
-        :page="fixedPageCount + pi + 1"
+        :page="1 + pagination.tocPages.value.length + pi + 1"
         :total="pagination.totalPages.value"
       />
     </div>
@@ -50,10 +55,10 @@ import type { TocHeading } from './TocPage.vue'
 const headings = ref<TocHeading[]>([])
 const measureEl = ref<HTMLElement>()
 const contentEl = ref<HTMLElement>()
+const tocEl = ref<HTMLElement>()
 const pagination = usePagination()
 
 const hasToc = computed(() => frontmatter.toc !== false)
-const fixedPageCount = computed(() => 1 + (hasToc.value ? 1 : 0))
 
 let mermaidDone = false
 let isMounted = false
@@ -85,9 +90,10 @@ async function runPagination () {
 
   await nextTick()
   extractHeadings()
+  await nextTick() // wait for TOC to render with extracted headings
   await waitForImages()
 
-  pagination.paginate(contentEl.value, blocks, true, hasToc.value)
+  pagination.paginate(contentEl.value, blocks, true, tocEl.value)
 }
 
 function onMermaidDone () {
