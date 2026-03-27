@@ -66,6 +66,24 @@ export async function exportPdf (options: ExportOptions) {
 
   const outputPath = options.output || options.file.replace(/\.md$/, '.pdf')
 
+  // Fix the last page: use flexbox to push footer to the bottom,
+  // with height just under the actual page height to prevent the extra blank page.
+  await page.evaluate(() => {
+    const pages = document.querySelectorAll('.a4-page')
+    if (pages.length < 2) return
+    // Measure the actual rendered height of a full page
+    const refPage = pages[0] as HTMLElement
+    const fullHeight = refPage.getBoundingClientRect().height
+    const last = pages[pages.length - 1] as HTMLElement
+    const reduction = 8
+    last.style.height = (fullHeight - reduction) + 'px'
+    const footer = last.querySelector('.page-footer') as HTMLElement
+    if (footer) {
+      // Compensate the footer position for the height reduction
+      footer.style.bottom = `calc(0.5cm - ${reduction}px)`
+    }
+  })
+
   console.log(`Generating PDF: ${outputPath}`)
   await page.pdf({
     path: outputPath,
