@@ -95,6 +95,19 @@ export function usePagination (): PaginationState {
       }
     }
 
+    // Prevent orphan headings (a heading left alone at the bottom of a page)
+    for (let p = 0; p < pages.length - 1; p++) {
+      const indices = pages[p]
+      if (indices.length < 2) continue
+      const lastIdx = indices[indices.length - 1]
+      const tag = elements[lastIdx]?.tagName
+      if (tag && /^H[1-6]$/.test(tag)) {
+        // Move the heading to the next page
+        indices.pop()
+        pages[p + 1].unshift(lastIdx)
+      }
+    }
+
     // Clean up
     document.body.removeChild(measurer)
 

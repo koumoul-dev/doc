@@ -91,6 +91,16 @@ async function runPagination () {
 }
 
 function onMermaidDone () {
+  // Capture mermaid-rendered SVGs back into the blocks array so the
+  // paginated view (which re-renders blocks via v-html) shows the diagrams.
+  if (contentEl.value) {
+    const children = contentEl.value.children
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].querySelector('.mermaid-block svg')) {
+        blocks[i] = children[i].innerHTML
+      }
+    }
+  }
   mermaidDone = true
   runPagination()
 }

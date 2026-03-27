@@ -63,6 +63,10 @@ Be careful with this particular setting.
 This action cannot be undone!
 :::
 
+### Images
+
+![Logo de la société Koumoul](./logo.png)
+
 ### Diagrams
 
 ```mermaid
@@ -75,6 +79,15 @@ graph TD
     F --> G[Vue App]
     G --> H[A4 Preview]
     G --> I[PDF Export]
+```
+
+```mermaid
+xychart-beta
+    title "Monthly Sales"
+    x-axis [Jan, Feb, Mar, Apr, May, Jun]
+    y-axis "Revenue (k€)" 0 --> 120
+    bar [52, 68, 80, 95, 78, 110]
+    line [50, 65, 75, 90, 82, 105]
 ```
 
 ---

@@ -58,30 +58,6 @@ h2 { font-size: 1.5em; margin: 0.8em 0 0.4em; border-bottom: 1px solid #eee; pad
 h3 { font-size: 1.25em; margin: 0.8em 0 0.4em; }
 h4 { font-size: 1.1em; margin: 0.8em 0 0.4em; }
 
-/* Automatic heading numbering via CSS counters */
-.doc-content {
-  counter-reset: h2counter;
-}
-.doc-content h2 {
-  counter-reset: h3counter;
-  counter-increment: h2counter;
-}
-.doc-content h2::before {
-  content: counter(h2counter) " - ";
-}
-.doc-content h3 {
-  counter-reset: h4counter;
-  counter-increment: h3counter;
-}
-.doc-content h3::before {
-  content: counter(h2counter) "." counter(h3counter) " - ";
-}
-.doc-content h4 {
-  counter-increment: h4counter;
-}
-.doc-content h4::before {
-  content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) " - ";
-}
 
 p { margin: 0.5em 0; }
 
@@ -147,6 +123,22 @@ blockquote {
 img {
   max-width: 100%;
   height: auto;
+}
+
+figure {
+  margin: 0.8em 0;
+  text-align: center;
+}
+
+figure img {
+  display: inline-block;
+}
+
+figcaption {
+  font-size: 0.85em;
+  color: #666;
+  font-style: italic;
+  margin-top: 0.4em;
 }
 
 /* Horizontal rule (non page-break) */
