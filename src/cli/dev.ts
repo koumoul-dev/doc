@@ -1,6 +1,7 @@
 import { createServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
+import { presetUno } from 'unocss'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { readFileSync } from 'node:fs'
@@ -27,7 +28,7 @@ export async function startDev (options: DevOptions) {
   const server = await createServer({
     root: packageRoot,
     plugins: [
-      UnoCSS({ configFile: resolve(packageRoot, 'uno.config.ts') }),
+      UnoCSS({ presets: [presetUno()], configFile: false }),
       vue(),
       docMarkdownPlugin(docFile),
       docConfigPlugin({

@@ -1,6 +1,7 @@
 import { createServer } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
+import { presetUno } from 'unocss'
 import puppeteer from 'puppeteer'
 import { resolve, dirname, basename } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -33,7 +34,7 @@ export async function exportPdf (options: ExportOptions) {
   const server = await createServer({
     root: packageRoot,
     plugins: [
-      UnoCSS({ configFile: resolve(packageRoot, 'uno.config.ts') }),
+      UnoCSS({ presets: [presetUno()], configFile: false }),
       vue(),
       docMarkdownPlugin(docFile),
       docConfigPlugin({
