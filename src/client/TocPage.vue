@@ -45,7 +45,7 @@ withDefaults(defineProps<{
 }
 
 .toc-list li {
-  padding: 4px 0;
+  padding: 3px 0;
 }
 
 .toc-list a {
@@ -58,8 +58,8 @@ withDefaults(defineProps<{
   color: #1976D2;
 }
 
-.toc-level-3 { padding-left: 1.5em; }
-.toc-level-4 { padding-left: 3em; }
-.toc-level-5 { padding-left: 4.5em; }
-.toc-level-6 { padding-left: 6em; }
+.toc-list li.toc-level-3 { padding: 2px 0 2px 1.5em; font-size: 0.92em; }
+.toc-list li.toc-level-4 { padding: 2px 0 2px 3em;   font-size: 0.86em; }
+.toc-list li.toc-level-5 { padding: 1px 0 1px 4.5em; font-size: 0.8em; }
+.toc-list li.toc-level-6 { padding: 1px 0 1px 6em;   font-size: 0.75em; }
 </style>

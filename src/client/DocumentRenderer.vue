@@ -59,13 +59,20 @@ const tocEl = ref<HTMLElement>()
 const pagination = usePagination()
 
 const hasToc = computed(() => frontmatter.toc !== false)
+const tocMaxLevel = computed(() => frontmatter.tocLevels ?? 2)
 
 let mermaidDone = false
 let isMounted = false
 
 function extractHeadings () {
   if (!contentEl.value) return
-  const els = contentEl.value.querySelectorAll('h2, h3, h4, h5, h6')
+  const max = tocMaxLevel.value + 1
+  const selector = [2, 3, 4, 5, 6].filter(l => l <= max).map(l => 'h' + l).join(', ')
+  if (!selector) {
+    headings.value = []
+    return
+  }
+  const els = contentEl.value.querySelectorAll(selector)
   headings.value = Array.from(els).map(el => ({
     level: parseInt(el.tagName[1]),
     text: el.textContent || '',

@@ -5,6 +5,7 @@ date: "2025-01-15"
 description: This is an example document demonstrating @koumoul/doc features.
 warning: This document is a draft and subject to change.
 toc: true
+tocLevels: 2
 theme: koumoul
 ---
 

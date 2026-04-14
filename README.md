@@ -47,11 +47,12 @@ date: "2025-01-15"
 description: A brief summary shown on the title page.
 warning: Displayed as a red warning box on the title page.
 toc: true
+tocLevels: 2
 theme: koumoul
 ---
 ```
 
-All fields are optional. Omitting `version` displays a draft warning.
+All fields are optional. Omitting `version` displays a draft warning. `tocLevels` controls how many heading levels are shown in the table of contents (default `2` — `h2` as level 1 and `h3` as level 2, since `h1` is reserved for the generated title page).
 
 ### Page breaks
 

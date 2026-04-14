@@ -5,6 +5,7 @@ export interface Frontmatter {
   description?: string
   warning?: string
   toc?: boolean
+  tocLevels?: number
   theme?: string
 }
 
