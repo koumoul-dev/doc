@@ -1,6 +1,6 @@
 {
   "name": "@koumoul/doc",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Preview and export professional A4 documents from markdown",
   "type": "module",
   "engines": {
