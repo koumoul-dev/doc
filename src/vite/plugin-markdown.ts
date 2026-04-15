@@ -1,8 +1,19 @@
-import { readFileSync } from 'node:fs'
-import { resolve, dirname } from 'node:path'
+import { readFileSync, statSync } from 'node:fs'
+import { resolve, dirname, extname, sep } from 'node:path'
 import { parseDocument } from '../markdown/frontmatter.ts'
 import { renderMarkdown } from '../markdown/pipeline.ts'
 import type { Plugin } from 'vite'
+
+const DOC_ASSETS_MIME: Record<string, string> = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.avif': 'image/avif',
+  '.ico': 'image/x-icon'
+}
 
 /**
  * Split rendered HTML into top-level block elements.
@@ -104,21 +115,24 @@ export const blocks = ${blocksJson}
           }
         }
       })
-    },
 
-    config () {
-      return {
-        resolve: {
-          alias: {
-            '/@doc-assets/': docDir + '/'
-          }
-        },
-        server: {
-          fs: {
-            allow: [docDir]
-          }
+      server.middlewares.use('/@doc-assets', (req, res, next) => {
+        const rel = decodeURIComponent((req.url || '').split('?')[0]).replace(/^\/+/, '')
+        if (!rel) return next()
+        const filePath = resolve(docDir, rel)
+        if (filePath !== docDir && !filePath.startsWith(docDir + sep)) {
+          res.statusCode = 403
+          res.end()
+          return
         }
-      }
+        try {
+          if (!statSync(filePath).isFile()) return next()
+        } catch {
+          return next()
+        }
+        res.setHeader('Content-Type', DOC_ASSETS_MIME[extname(filePath).toLowerCase()] || 'application/octet-stream')
+        res.end(readFileSync(filePath))
+      })
     }
   }
 }
