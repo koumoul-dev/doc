@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import UnoCSS from 'unocss/vite'
 import { presetUno } from 'unocss'
 import puppeteer from 'puppeteer'
-import { resolve, dirname, basename } from 'node:path'
+import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { docMarkdownPlugin } from '../vite/plugin-markdown.ts'
 import { docConfigPlugin } from '../vite/plugin-config.ts'
@@ -23,10 +23,8 @@ interface ExportOptions {
 export async function exportPdf (options: ExportOptions) {
   const docFile = resolve(process.cwd(), options.file)
 
-  // Read frontmatter for the footer title and theme
   const raw = readFileSync(docFile, 'utf-8')
   const { frontmatter } = parseDocument(raw)
-  const title = frontmatter.title || basename(docFile, '.md')
   const theme = resolveTheme(frontmatter.theme || 'koumoul')
 
   // Start a temporary Vite server
