@@ -127,8 +127,9 @@ export function usePagination (): PaginationState {
     for (let i = 0; i < elements.length; i++) {
       const el = elements[i]
 
-      // Page break forces a new page
-      if (el.classList.contains('page-break')) {
+      // Page break forces a new page (page-break class may be on the element
+      // itself or on the first child when blocks are wrapped by the renderer)
+      if (el.classList.contains('page-break') || el.firstElementChild?.classList.contains('page-break')) {
         if (pages[pages.length - 1].length > 0) {
           pages.push([])
         }

@@ -39,3 +39,15 @@ test('mermaid diagram renders', async ({ page }) => {
   // Wait for mermaid to render SVG
   await expect(page.locator('.mermaid-block svg')).toBeVisible({ timeout: 10_000 })
 })
+
+test('thematic break (---) forces a page break', async ({ page }) => {
+  await page.goto('/')
+  // Wait for pagination to finish
+  await expect(page.locator('html[data-pagination-done="true"]')).toBeAttached({ timeout: 15_000 })
+
+  // The a4-page containing the Conclusion heading must not contain the
+  // mermaid diagram that precedes the thematic break in example.md.
+  const conclusionPage = page.locator('.a4-page', { has: page.locator('h2#conclusion') })
+  await expect(conclusionPage).toHaveCount(1)
+  await expect(conclusionPage.locator('.mermaid-block')).toHaveCount(0)
+})

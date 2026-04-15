@@ -95,4 +95,4 @@ xychart-beta
 
 ## Conclusion
 
-This document serves as both a test fixture and an example of what @koumoul/doc can produce.
+This document serves as both a test fixture and an example of what @koumoul/doc can produce. There is a page break just before it.
