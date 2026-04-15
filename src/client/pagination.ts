@@ -133,6 +133,7 @@ export function usePagination (): PaginationState {
         if (pages[pages.length - 1].length > 0) {
           pages.push([])
         }
+        clearChildren(measurer)
         continue
       }
 
