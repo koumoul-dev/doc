@@ -8,7 +8,7 @@ import type { Plugin } from 'vite'
  * Split rendered HTML into top-level block elements.
  * Uses a simple depth-tracking parser that handles nested tags correctly.
  */
-function splitHtmlBlocks (html: string): string[] {
+export function splitHtmlBlocks (html: string): string[] {
   const blocks: string[] = []
   const parser = /<!--[\s\S]*?-->|<\/([\w-]+)\s*>|<([\w-]+)(?:\s[^>]*)?\/?>/g
   let depth = 0
