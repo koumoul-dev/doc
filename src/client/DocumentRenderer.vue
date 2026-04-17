@@ -53,6 +53,7 @@ import { usePagination } from './pagination.ts'
 import type { TocHeading } from './TocPage.vue'
 
 const headings = ref<TocHeading[]>([])
+const headingBlockIndices: number[] = []
 const measureEl = ref<HTMLElement>()
 const contentEl = ref<HTMLElement>()
 const tocEl = ref<HTMLElement>()
@@ -70,14 +71,37 @@ function extractHeadings () {
   const selector = [2, 3, 4, 5, 6].filter(l => l <= max).map(l => 'h' + l).join(', ')
   if (!selector) {
     headings.value = []
+    headingBlockIndices.length = 0
     return
   }
+  const blockEls = Array.from(contentEl.value.children) as HTMLElement[]
   const els = contentEl.value.querySelectorAll(selector)
-  headings.value = Array.from(els).map(el => ({
-    level: parseInt(el.tagName[1]),
-    text: el.textContent || '',
-    id: el.id
-  }))
+  headingBlockIndices.length = 0
+  headings.value = Array.from(els).map(el => {
+    let node: HTMLElement | null = el as HTMLElement
+    while (node && node.parentElement !== contentEl.value) {
+      node = node.parentElement
+    }
+    headingBlockIndices.push(node ? blockEls.indexOf(node) : -1)
+    return {
+      level: parseInt(el.tagName[1]),
+      text: el.textContent || '',
+      id: el.id
+    }
+  })
+}
+
+function stampPageNumbers () {
+  const blockToPage = new Map<number, number>()
+  pagination.contentPages.value.forEach((page, pi) => {
+    for (const bi of page.blockIndices) blockToPage.set(bi, pi)
+  })
+  const base = 1 + pagination.tocPages.value.length
+  headings.value = headings.value.map((h, i) => {
+    const blockIdx = headingBlockIndices[i]
+    const pageIdx = blockToPage.get(blockIdx)
+    return pageIdx == null ? h : { ...h, pageNumber: base + pageIdx + 1 }
+  })
 }
 
 async function waitForImages (): Promise<void> {
@@ -101,6 +125,7 @@ async function runPagination () {
   await waitForImages()
 
   pagination.paginate(contentEl.value, blocks, true, tocEl.value)
+  stampPageNumbers()
 }
 
 function onMermaidDone () {

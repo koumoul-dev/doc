@@ -7,7 +7,11 @@
         :key="i"
         :class="'toc-level-' + heading.level"
       >
-        <a :href="'#' + heading.id">{{ heading.text }}</a>
+        <a :href="'#' + heading.id" class="toc-link">
+          <span class="toc-text">{{ heading.text }}</span>
+          <span class="toc-dots" />
+          <span v-if="heading.pageNumber != null" class="toc-pagenum">{{ heading.pageNumber }}</span>
+        </a>
       </li>
     </ul>
   </div>
@@ -18,6 +22,7 @@ export interface TocHeading {
   level: number
   text: string
   id: string
+  pageNumber?: number
 }
 
 withDefaults(defineProps<{
@@ -45,7 +50,8 @@ withDefaults(defineProps<{
 }
 
 .toc-list li {
-  padding: 3px 0;
+  padding: 1px 0;
+  line-height: 1.3;
 }
 
 .toc-list a {
@@ -58,8 +64,26 @@ withDefaults(defineProps<{
   color: #1976D2;
 }
 
-.toc-list li.toc-level-3 { padding: 2px 0 2px 1.5em; font-size: 0.92em; }
-.toc-list li.toc-level-4 { padding: 2px 0 2px 3em;   font-size: 0.86em; }
-.toc-list li.toc-level-5 { padding: 1px 0 1px 4.5em; font-size: 0.8em; }
-.toc-list li.toc-level-6 { padding: 1px 0 1px 6em;   font-size: 0.75em; }
+.toc-link {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted #bbb;
+  transform: translateY(-4px);
+  min-width: 16px;
+}
+
+.toc-pagenum {
+  font-variant-numeric: tabular-nums;
+  color: #666;
+}
+
+.toc-list li.toc-level-3 { padding: 1px 0 1px 1.5em; font-size: 0.92em; }
+.toc-list li.toc-level-4 { padding: 0 0 0 3em;       font-size: 0.86em; }
+.toc-list li.toc-level-5 { padding: 0 0 0 4.5em;     font-size: 0.8em; }
+.toc-list li.toc-level-6 { padding: 0 0 0 6em;       font-size: 0.75em; }
 </style>
