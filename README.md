@@ -62,6 +62,34 @@ Use a horizontal rule to insert a page break:
 ---
 ```
 
+### Sub-document includes
+
+A line whose sole content is `@<relative-path>` is replaced by the contents of the referenced Markdown file. Includes can be nested — each file may include its own sub-documents. Image URLs and `@` includes inside a sub-document are resolved **relative to that sub-document's directory**, so sub-files stay self-contained and can be edited in isolation.
+
+```text
+book.md
+chapters/
+  overview.md       # contains  @./deeper/deep-dive.md  and  ![](./diagram.svg)
+  diagram.svg
+  deeper/
+    deep-dive.md    # contains  ![](./icon.svg)
+    icon.svg
+```
+
+```markdown
+# My Book
+
+@./chapters/overview.md
+```
+
+Notes:
+
+- Paths must stay inside the root document's directory; `../` escapes are rejected.
+- Frontmatter in sub-documents is ignored — only the root file's frontmatter is used.
+- Circular includes and includes more than 16 levels deep produce a build error.
+- Heading numbering is continuous across included files.
+- `@` anywhere else on a line (e.g. in prose like `@handle`) is left alone.
+
 ### Custom containers
 
 Four styled container types are available:
@@ -111,7 +139,7 @@ Set the theme via the `theme` frontmatter field (defaults to `koumoul`). Themes 
 ## Development
 
 ```bash
-npm run dev          # Preview example.md
+npm run dev          # Preview examples/example.md
 npm run lint         # Lint
 npm run typecheck    # Type check
 npm run test         # Unit tests

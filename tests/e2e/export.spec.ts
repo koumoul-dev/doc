@@ -14,7 +14,7 @@ test.afterAll(() => {
 })
 
 test('PDF export produces a valid file', async () => {
-  execSync(`node src/cli/index.ts export example.md --output ${outputPath}`, {
+  execSync(`node src/cli/index.ts export examples/example.md --output ${outputPath}`, {
     timeout: 30_000,
     stdio: 'pipe'
   })

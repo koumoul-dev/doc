@@ -1,6 +1,6 @@
 import { readFileSync, statSync } from 'node:fs'
 import { resolve, dirname, extname, sep } from 'node:path'
-import { parseDocument } from '../markdown/frontmatter.ts'
+import { expandIncludes } from '../markdown/includes.ts'
 import { renderMarkdown } from '../markdown/pipeline.ts'
 import type { Plugin } from 'vite'
 
@@ -71,6 +71,8 @@ const RESOLVED_ID = '\0' + VIRTUAL_ID
 export function docMarkdownPlugin (docFile: string): Plugin {
   const absolutePath = resolve(docFile)
   const docDir = dirname(absolutePath)
+  let includedFiles: Set<string> = new Set([absolutePath])
+  let watcher: { add: (path: string) => void } | null = null
 
   return {
     name: 'koumoul-doc-markdown',
@@ -82,8 +84,9 @@ export function docMarkdownPlugin (docFile: string): Plugin {
     async load (id) {
       if (id !== RESOLVED_ID) return
 
-      const raw = readFileSync(absolutePath, 'utf-8')
-      const { frontmatter, body } = parseDocument(raw)
+      const { frontmatter, body, files } = expandIncludes(absolutePath)
+      includedFiles = new Set(files)
+      if (watcher) for (const f of files) watcher.add(f)
       let html = await renderMarkdown(body)
 
       // Rewrite relative image paths to use the doc-assets alias
@@ -105,16 +108,19 @@ export const blocks = ${blocksJson}
     },
 
     configureServer (server) {
+      watcher = server.watcher
       server.watcher.add(absolutePath)
-      server.watcher.on('change', (path) => {
-        if (path === absolutePath) {
-          const mod = server.moduleGraph.getModuleById(RESOLVED_ID)
-          if (mod) {
-            server.moduleGraph.invalidateModule(mod)
-            server.ws.send({ type: 'full-reload' })
-          }
+      const onFileEvent = (path: string) => {
+        if (!includedFiles.has(path)) return
+        const mod = server.moduleGraph.getModuleById(RESOLVED_ID)
+        if (mod) {
+          server.moduleGraph.invalidateModule(mod)
+          server.ws.send({ type: 'full-reload' })
         }
-      })
+      }
+      server.watcher.on('change', onFileEvent)
+      server.watcher.on('add', onFileEvent)
+      server.watcher.on('unlink', onFileEvent)
 
       server.middlewares.use('/@doc-assets', (req, res, next) => {
         const rel = decodeURIComponent((req.url || '').split('?')[0]).replace(/^\/+/, '')

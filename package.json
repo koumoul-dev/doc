@@ -19,7 +19,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "prepublishOnly": "npm run build",
-    "dev": "node src/cli/index.ts dev example.md",
+    "dev": "node src/cli/index.ts dev examples/example.md",
     "lint": "eslint",
     "typecheck": "vue-tsc --noEmit",
     "test": "node --test tests/unit/**/*.test.ts",

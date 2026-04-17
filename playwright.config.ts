@@ -9,7 +9,7 @@ export default defineConfig({
     screenshot: 'only-on-failure'
   },
   webServer: {
-    command: 'node src/cli/index.ts dev example.md --port 5173',
+    command: 'node src/cli/index.ts dev examples/example.md --port 5173',
     port: 5173,
     reuseExistingServer: !process.env.CI,
     timeout: 15_000

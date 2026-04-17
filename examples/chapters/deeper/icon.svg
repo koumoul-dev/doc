@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <circle cx="60" cy="60" r="56" fill="#f5b642" stroke="#b07810" stroke-width="3"/>
+  <g fill="#2d2d2d" font-family="sans-serif" text-anchor="middle">
+    <text x="60" y="56" font-size="14" font-weight="700">deeper/</text>
+    <text x="60" y="76" font-size="14" font-weight="700">icon.svg</text>
+  </g>
+</svg>

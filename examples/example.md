@@ -91,6 +91,12 @@ xychart-beta
     line [50, 65, 75, 90, 82, 105]
 ```
 
+## Included sub-documents
+
+This section demonstrates the `@<path>` include directive. The subsection below (and its nested deep-dive) are spliced in from files under `./chapters/`. Each file's images are resolved relative to that file's own directory, so sub-docs remain self-contained and can be edited in isolation.
+
+@./chapters/overview.md
+
 ---
 
 ## Conclusion

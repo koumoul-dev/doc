@@ -19,7 +19,7 @@ Key pattern: two-phase rendering — blocks are measured in a hidden container, 
 | Command | Purpose |
 |---------|---------|
 | `npm run build` | TypeScript compilation via tsc (`tsconfig.build.json`) |
-| `npm run dev` | Start dev server on `example.md` |
+| `npm run dev` | Start dev server on `examples/example.md` |
 | `npm run lint` | ESLint (neostandard, no semicolons) |
 | `npm run typecheck` | vue-tsc type checking |
 | `npm run test` | Unit tests (Node built-in test runner) |
