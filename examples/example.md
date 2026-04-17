@@ -13,6 +13,8 @@ theme: koumoul
 
 This is an example document for **@koumoul/doc**. It demonstrates the main features of the tool.
 
+Jump to [Features](#features), [Custom Containers](#custom-containers) or the [Conclusion](#conclusion). Internal links use the heading's slug as anchor (e.g. `[Conclusion](#conclusion)`).
+
 ## Features
 
 ### Markdown Support

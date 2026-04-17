@@ -42,6 +42,7 @@ export async function createMarkdownPipeline (): Promise<MarkdownIt> {
 
   // Add IDs and section numbers to headings
   const headingCounters = { h2: 0, h3: 0, h4: 0 }
+  const seenSlugs = new Set<string>()
 
   const defaultHeadingOpen = md.renderer.rules.heading_open ||
     function (tokens, idx, options, _env, self) { return self.renderToken(tokens, idx, options) }
@@ -69,7 +70,14 @@ export async function createMarkdownPipeline (): Promise<MarkdownIt> {
         .filter(t => t.type === 'text' || t.type === 'code_inline')
         .map(t => t.content)
         .join('')
-      const id = slugify(text)
+      const base = slugify(text)
+      let id = base
+      let n = 1
+      while (seenSlugs.has(id)) {
+        n++
+        id = `${base}-${n}`
+      }
+      seenSlugs.add(id)
       token.attrSet('id', id)
 
       // Prepend section number to heading content

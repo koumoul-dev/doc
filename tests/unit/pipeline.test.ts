@@ -70,6 +70,25 @@ describe('renderMarkdown — heading numbering', () => {
     const html = await renderMarkdown('## Hello, World! (2026)')
     assert.match(html, /id="hello-world-2026"/)
   })
+
+  it('disambiguates duplicate heading slugs with numeric suffixes', async () => {
+    const md = '## Chapter A\n\n### Overview\n\n## Chapter B\n\n### Overview\n\n### Overview'
+    const html = await renderMarkdown(md)
+    // First "Overview" keeps the bare slug; subsequent ones get -2, -3
+    assert.match(html, /<h3[^>]*id="overview"[^>]*>1\.1 - Overview<\/h3>/)
+    assert.match(html, /<h3[^>]*id="overview-2"[^>]*>2\.1 - Overview<\/h3>/)
+    assert.match(html, /<h3[^>]*id="overview-3"[^>]*>2\.2 - Overview<\/h3>/)
+  })
+
+  it('avoids collision between a duplicated slug and a natural slug that would match the suffix', async () => {
+    // First "Overview" gets id="overview". Second "Overview" would normally get "overview-2",
+    // but a natural "Overview 2" heading also slugifies to "overview-2" — the loop must skip it.
+    const md = '## Overview\n\n## Overview 2\n\n## Overview'
+    const html = await renderMarkdown(md)
+    assert.match(html, /<h2[^>]*id="overview"[^>]*>1 - Overview<\/h2>/)
+    assert.match(html, /<h2[^>]*id="overview-2"[^>]*>2 - Overview 2<\/h2>/)
+    assert.match(html, /<h2[^>]*id="overview-3"[^>]*>3 - Overview<\/h2>/)
+  })
 })
 
 describe('renderMarkdown — image figures', () => {
