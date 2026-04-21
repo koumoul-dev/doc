@@ -83,6 +83,7 @@ graph TD
     G --> H[A4 Preview]
     G --> I[PDF Export]
 ```
+<figcaption>Rendering pipeline from markdown source to A4 preview and PDF export.</figcaption>
 
 ```mermaid
 xychart-beta

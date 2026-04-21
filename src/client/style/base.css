@@ -141,6 +141,7 @@ figcaption {
   color: #666;
   font-style: italic;
   margin-top: 0.2em;
+  text-align: center;
 }
 
 /* Horizontal rule (non page-break) */
@@ -186,6 +187,13 @@ hr {
 .mermaid-block {
   margin: 0.8em 0;
   text-align: center;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.mermaid-block pre.mermaid {
+  background: none;
+  padding: 0;
 }
 
 .mermaid-block svg {
