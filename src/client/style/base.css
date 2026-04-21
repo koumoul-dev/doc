@@ -132,13 +132,15 @@ figure {
 
 figure img {
   display: inline-block;
+  border: 1px solid #aaa;
+  border-radius: 4px;
 }
 
 figcaption {
   font-size: 0.85em;
   color: #666;
   font-style: italic;
-  margin-top: 0.4em;
+  margin-top: 0.2em;
 }
 
 /* Horizontal rule (non page-break) */
