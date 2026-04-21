@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 declare module 'markdown-it-container' {
   import type MarkdownIt from 'markdown-it'
   const container: MarkdownIt.PluginWithOptions
