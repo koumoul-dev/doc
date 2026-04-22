@@ -45,6 +45,8 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { frontmatter, blocks } from 'virtual:doc-content'
+
+if (frontmatter.title) document.title = frontmatter.title
 import TitlePage from './TitlePage.vue'
 import TocPage from './TocPage.vue'
 import MermaidBlock from './MermaidBlock.vue'
