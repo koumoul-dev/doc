@@ -199,3 +199,35 @@ hr {
 .mermaid-block svg {
   max-width: 100%;
 }
+
+.mermaid-block.mermaid-error {
+  border-color: #d33;
+  background: #fff5f5;
+  text-align: left;
+}
+
+.mermaid-error-content {
+  padding: 0.6em 0.8em;
+}
+
+.mermaid-error-title {
+  margin: 0 0 0.4em;
+  font-weight: 600;
+  color: #d33;
+}
+
+.mermaid-error-detail {
+  margin: 0 0 0.6em;
+  padding: 0;
+  background: none;
+  white-space: pre-wrap;
+  color: #a00;
+  font-size: 0.85em;
+}
+
+.mermaid-error-source {
+  margin: 0;
+  padding: 0;
+  background: none;
+  white-space: pre-wrap;
+}

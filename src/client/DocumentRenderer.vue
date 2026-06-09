@@ -136,7 +136,7 @@ function onMermaidDone () {
   if (contentEl.value) {
     const children = contentEl.value.children
     for (let i = 0; i < children.length; i++) {
-      if (children[i].querySelector('.mermaid-block svg')) {
+      if (children[i].querySelector('.mermaid-block svg, .mermaid-block.mermaid-error')) {
         blocks[i] = children[i].innerHTML
       }
     }
