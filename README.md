@@ -54,6 +54,37 @@ theme: koumoul
 
 All fields are optional. Omitting `version` displays a draft warning. `tocLevels` controls how many heading levels are shown in the table of contents (default `2` — `h2` as level 1 and `h3` as level 2, since `h1` is reserved for the generated title page).
 
+### Layouts
+
+The `layout` field selects the shape of the document (default `report`):
+
+| Layout | First page | Table of contents | Heading numbers | Footer |
+|--------|------------|-------------------|-----------------|--------|
+| `report` | generated title page | rendered unless `toc: false` | `2.1 - Title` | document title and page counter |
+| `letterhead` | compact header band, content starts right below | never rendered | none | legal mentions, page counter only past one page |
+
+`letterhead` suits short official documents — attestations, cover letters, notes — that usually fit a single page but keep paginating when they don't. The header is printed on the first page only, the legal mentions on every page.
+
+```yaml
+---
+layout: letterhead
+title: Attestation de conformité
+reference: "2026-014"
+place: Vannes
+date: "2026-08-13"
+---
+```
+
+| Field | Rendered as |
+|-------|-------------|
+| `reference` | `Réf. 2026-014`, right-aligned above the title |
+| `place` + `date` | `Fait à Vannes, le 13/08/2026` (either one alone works: `Fait à Vannes` / `Le 13/08/2026`) |
+| `title` | centred heading below the reference block |
+
+The issuer identity — logo, name, address lines and the legal mentions printed in the footer — comes from the theme, not from the document. The `koumoul` theme carries Koumoul's; `minimal` carries none, so a `letterhead` document on `minimal` renders the reference block and title without a header band. `version`, `description` and `warning` are ignored in this layout.
+
+Run `npm run dev:letterhead` to preview `examples/letterhead.md`.
+
 ### Page breaks
 
 Use a horizontal rule to insert a page break:
@@ -134,7 +165,7 @@ Two built-in themes are available:
 - **koumoul** (default) -- branded theme with custom colors and logo
 - **minimal** -- neutral styling
 
-Set the theme via the `theme` frontmatter field (defaults to `koumoul`). Themes control colors, fonts, and optional logo display on the title page via CSS variables.
+Set the theme via the `theme` frontmatter field (defaults to `koumoul`). Themes control colors, fonts, optional logo display on the title page via CSS variables, and the letterhead identity used by the `letterhead` layout.
 
 ## Development
 

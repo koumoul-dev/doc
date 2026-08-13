@@ -87,7 +87,10 @@ export function docMarkdownPlugin (docFile: string): Plugin {
       const { frontmatter, body, files } = expandIncludes(absolutePath)
       includedFiles = new Set(files)
       if (watcher) for (const f of files) watcher.add(f)
-      let html = await renderMarkdown(body)
+      // The letterhead layout has no table of contents to pair numbers with
+      let html = await renderMarkdown(body, {
+        numberHeadings: frontmatter.layout !== 'letterhead'
+      })
 
       // Rewrite relative image paths to use the doc-assets alias
       html = html.replace(

@@ -43,6 +43,22 @@ body {
   color: #666;
 }
 
+.page-footer-title { flex: 1; }
+
+/* Centred on the page itself, whatever the siblings around it */
+.page-footer-legal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+.page-footer-count {
+  flex: 1;
+  text-align: right;
+  white-space: nowrap;
+}
+
 /* Hidden container used before pagination runs */
 .document-raw {
   visibility: hidden;

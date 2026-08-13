@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs'
 import { docMarkdownPlugin } from '../vite/plugin-markdown.ts'
 import { docConfigPlugin } from '../vite/plugin-config.ts'
 import { docThemePlugin } from '../vite/plugin-theme.ts'
-import { resolveTheme } from '../themes/resolve.ts'
+import { resolveTheme, clientLetterhead, letterheadLogoPath } from '../themes/resolve.ts'
 import { parseDocument } from '../markdown/frontmatter.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -35,7 +35,9 @@ export async function startDev (options: DevOptions) {
         file: docFile,
         theme: theme.name,
         port: options.port,
-        hasLogo: !!theme.logo
+        hasLogo: !!theme.logo,
+        hasLetterheadLogo: !!letterheadLogoPath(theme),
+        letterhead: clientLetterhead(theme)
       }),
       docThemePlugin(theme)
     ],

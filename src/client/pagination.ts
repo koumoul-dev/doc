@@ -34,8 +34,13 @@ export interface PaginationState {
   totalPages: Ref<number>
   /** Whether pagination has been computed */
   ready: Ref<boolean>
-  /** Run pagination measurement. Call after mermaid + images are ready. */
-  paginate: (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement) => void
+  /**
+   * Run pagination measurement. Call after mermaid + images are ready.
+   *
+   * `firstPageOffset` reserves that many pixels at the top of the first content
+   * page — the room taken by the letterhead header.
+   */
+  paginate: (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement, firstPageOffset?: number) => void
 }
 
 export function usePagination (): PaginationState {
@@ -44,7 +49,7 @@ export function usePagination (): PaginationState {
   const totalPages = ref(0)
   const ready = ref(false)
 
-  function paginate (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement): void {
+  function paginate (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement, firstPageOffset = 0): void {
     // Get all rendered block elements from the content container
     const elements = Array.from(contentEl.children) as HTMLElement[]
 
@@ -121,8 +126,15 @@ export function usePagination (): PaginationState {
       }
     }
 
-    // Distribute content blocks into pages by measurement
+    // Distribute content blocks into pages by measurement.
+    // A spacer reserves the room taken by the first-page header; it lives in the
+    // measurer until the first page is flushed (clearChildren drops it).
     const pages: number[][] = [[]]
+    if (firstPageOffset > 0) {
+      const spacer = document.createElement('div')
+      spacer.style.height = `${firstPageOffset}px`
+      measurer.appendChild(spacer)
+    }
 
     for (let i = 0; i < elements.length; i++) {
       const el = elements[i]

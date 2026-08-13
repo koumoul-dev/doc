@@ -66,6 +66,13 @@ describe('renderMarkdown — heading numbering', () => {
     assert.match(html, /<h2[^>]*>1 - Section<\/h2>/)
   })
 
+  it('omits section numbers when numbering is disabled', async () => {
+    const html = await renderMarkdown('## First\n\n### Sub\n\n## Second', { numberHeadings: false })
+    assert.match(html, /<h2[^>]*id="first"[^>]*>First<\/h2>/)
+    assert.match(html, /<h3[^>]*id="sub"[^>]*>Sub<\/h3>/)
+    assert.match(html, /<h2[^>]*id="second"[^>]*>Second<\/h2>/)
+  })
+
   it('slugifies headings with special characters', async () => {
     const html = await renderMarkdown('## Hello, World! (2026)')
     assert.match(html, /id="hello-world-2026"/)

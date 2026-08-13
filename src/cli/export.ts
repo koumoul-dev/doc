@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 import { docMarkdownPlugin } from '../vite/plugin-markdown.ts'
 import { docConfigPlugin } from '../vite/plugin-config.ts'
 import { docThemePlugin } from '../vite/plugin-theme.ts'
-import { resolveTheme } from '../themes/resolve.ts'
+import { resolveTheme, clientLetterhead, letterheadLogoPath } from '../themes/resolve.ts'
 import { parseDocument } from '../markdown/frontmatter.ts'
 import { readFileSync } from 'node:fs'
 
@@ -39,7 +39,9 @@ export async function exportPdf (options: ExportOptions) {
         file: docFile,
         theme: theme.name,
         port,
-        hasLogo: !!theme.logo
+        hasLogo: !!theme.logo,
+        hasLetterheadLogo: !!letterheadLogoPath(theme),
+        letterhead: clientLetterhead(theme)
       }),
       docThemePlugin(theme)
     ],

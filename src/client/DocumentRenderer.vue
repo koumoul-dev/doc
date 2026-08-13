@@ -1,7 +1,10 @@
 <template>
   <!-- Hidden measurement container — rendered first to measure block heights -->
   <div v-if="!pagination.ready.value" ref="measureEl" class="document-raw">
-    <TitlePage :frontmatter="frontmatter" />
+    <div v-if="isLetterhead" ref="headerEl">
+      <LetterheadHeader :frontmatter="frontmatter" />
+    </div>
+    <TitlePage v-else :frontmatter="frontmatter" />
     <div v-if="hasToc" ref="tocEl">
       <TocPage :headings="headings" />
     </div>
@@ -14,7 +17,7 @@
   <!-- Paginated output -->
   <div v-else class="document">
     <!-- Title page -->
-    <div v-if="true" class="a4-page">
+    <div v-if="!isLetterhead" class="a4-page">
       <TitlePage :frontmatter="frontmatter" />
       <PageFooter :title="frontmatter.title || ''" :page="1" :total="pagination.totalPages.value" />
     </div>
@@ -30,13 +33,16 @@
 
     <!-- Content pages -->
     <div v-for="(page, pi) in pagination.contentPages.value" :key="pi" class="a4-page">
+      <LetterheadHeader v-if="isLetterhead && pi === 0" :frontmatter="frontmatter" />
       <div class="doc-content">
         <div v-for="idx in page.blockIndices" :key="idx" v-html="blocks[idx]" />
       </div>
       <PageFooter
-        :title="frontmatter.title || ''"
-        :page="1 + pagination.tocPages.value.length + pi + 1"
+        :title="isLetterhead ? '' : (frontmatter.title || '')"
+        :page="firstContentPage + pi"
         :total="pagination.totalPages.value"
+        :legal="isLetterhead ? letterheadLegal : undefined"
+        :show-count="!isLetterhead || pagination.totalPages.value > 1"
       />
     </div>
   </div>
@@ -45,9 +51,11 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { frontmatter, blocks } from 'virtual:doc-content'
+import { config } from 'virtual:doc-config'
 
 if (frontmatter.title) document.title = frontmatter.title
 import TitlePage from './TitlePage.vue'
+import LetterheadHeader from './LetterheadHeader.vue'
 import TocPage from './TocPage.vue'
 import MermaidBlock from './MermaidBlock.vue'
 import PageFooter from './PageFooter.vue'
@@ -59,9 +67,15 @@ const headingBlockIndices: number[] = []
 const measureEl = ref<HTMLElement>()
 const contentEl = ref<HTMLElement>()
 const tocEl = ref<HTMLElement>()
+const headerEl = ref<HTMLElement>()
 const pagination = usePagination()
 
-const hasToc = computed(() => frontmatter.toc !== false)
+const isLetterhead = computed(() => frontmatter.layout === 'letterhead')
+const letterheadLegal = config.letterhead?.legal
+const hasToc = computed(() => !isLetterhead.value && frontmatter.toc !== false)
+/** 1-based number of the first content page — no title page in letterhead layout */
+const firstContentPage = computed(() =>
+  (isLetterhead.value ? 0 : 1) + pagination.tocPages.value.length + 1)
 const tocMaxLevel = computed(() => frontmatter.tocLevels ?? 2)
 
 let mermaidDone = false
@@ -98,7 +112,7 @@ function stampPageNumbers () {
   pagination.contentPages.value.forEach((page, pi) => {
     for (const bi of page.blockIndices) blockToPage.set(bi, pi)
   })
-  const base = 1 + pagination.tocPages.value.length
+  const base = firstContentPage.value - 1
   headings.value = headings.value.map((h, i) => {
     const blockIdx = headingBlockIndices[i]
     const pageIdx = blockToPage.get(blockIdx)
@@ -126,7 +140,10 @@ async function runPagination () {
   await nextTick() // wait for TOC to render with extracted headings
   await waitForImages()
 
-  pagination.paginate(contentEl.value, blocks, true, tocEl.value)
+  const headerOffset = isLetterhead.value && headerEl.value
+    ? headerEl.value.getBoundingClientRect().height
+    : 0
+  pagination.paginate(contentEl.value, blocks, !isLetterhead.value, tocEl.value, headerOffset)
   stampPageNumbers()
 }
 

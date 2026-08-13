@@ -12,7 +12,13 @@ function slugify (text: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-export async function createMarkdownPipeline (): Promise<MarkdownIt> {
+export interface PipelineOptions {
+  /** Prefix headings with their section number (`2.1 - Title`). Default `true`. */
+  numberHeadings?: boolean
+}
+
+export async function createMarkdownPipeline (options: PipelineOptions = {}): Promise<MarkdownIt> {
+  const numberHeadings = options.numberHeadings !== false
   const md = new MarkdownIt({
     html: true,
     linkify: true,
@@ -54,15 +60,17 @@ export async function createMarkdownPipeline (): Promise<MarkdownIt> {
 
     // Compute section number
     let number = ''
-    if (level === 2) {
-      headingCounters.h2++; headingCounters.h3 = 0; headingCounters.h4 = 0
-      number = `${headingCounters.h2}`
-    } else if (level === 3) {
-      headingCounters.h3++; headingCounters.h4 = 0
-      number = `${headingCounters.h2}.${headingCounters.h3}`
-    } else if (level === 4) {
-      headingCounters.h4++
-      number = `${headingCounters.h2}.${headingCounters.h3}.${headingCounters.h4}`
+    if (numberHeadings) {
+      if (level === 2) {
+        headingCounters.h2++; headingCounters.h3 = 0; headingCounters.h4 = 0
+        number = `${headingCounters.h2}`
+      } else if (level === 3) {
+        headingCounters.h3++; headingCounters.h4 = 0
+        number = `${headingCounters.h2}.${headingCounters.h3}`
+      } else if (level === 4) {
+        headingCounters.h4++
+        number = `${headingCounters.h2}.${headingCounters.h3}.${headingCounters.h4}`
+      }
     }
 
     if (contentToken && contentToken.children) {
@@ -119,7 +127,7 @@ export async function createMarkdownPipeline (): Promise<MarkdownIt> {
   return md
 }
 
-export async function renderMarkdown (body: string): Promise<string> {
-  const md = await createMarkdownPipeline()
+export async function renderMarkdown (body: string, options: PipelineOptions = {}): Promise<string> {
+  const md = await createMarkdownPipeline(options)
   return md.render(body)
 }

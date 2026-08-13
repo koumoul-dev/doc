@@ -1,3 +1,22 @@
+/** Page layout: `report` opens on a title page, `letterhead` on a compact header band */
+export type DocLayout = 'report' | 'letterhead'
+
+/** Issuer identity printed by the `letterhead` layout, as sent to the browser */
+export interface Letterhead {
+  /** Issuer name, printed in bold next to the logo */
+  name: string
+  /** Address, mail, phone… one line each */
+  lines: string[]
+  /** Legal mentions printed in the footer of every page */
+  legal?: string
+}
+
+/** Letterhead identity as declared by a theme, filesystem paths included */
+export interface ThemeLetterhead extends Letterhead {
+  /** Logo for the header band — falls back to the theme logo when absent */
+  logo?: string
+}
+
 export interface Frontmatter {
   title?: string
   version?: string
@@ -7,6 +26,11 @@ export interface Frontmatter {
   toc?: boolean
   tocLevels?: number
   theme?: string
+  layout?: DocLayout
+  /** Document reference, `letterhead` layout only */
+  reference?: string
+  /** Place of writing — "Fait à <place>, le <date>", `letterhead` layout only */
+  place?: string
 }
 
 export interface DocConfig {
@@ -14,6 +38,8 @@ export interface DocConfig {
   theme: string
   port: number
   hasLogo: boolean
+  hasLetterheadLogo: boolean
+  letterhead?: Letterhead
 }
 
 export interface DocTheme {
@@ -22,4 +48,5 @@ export interface DocTheme {
   logo?: string
   mermaidTheme?: Record<string, string>
   cssVariables?: Record<string, string>
+  letterhead?: ThemeLetterhead
 }
