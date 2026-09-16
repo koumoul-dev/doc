@@ -139,6 +139,7 @@ async function runPagination () {
   extractHeadings()
   await nextTick() // wait for TOC to render with extracted headings
   await waitForImages()
+  await document.fonts.ready
 
   const headerOffset = isLetterhead.value && headerEl.value
     ? headerEl.value.getBoundingClientRect().height
