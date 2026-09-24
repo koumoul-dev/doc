@@ -10,6 +10,7 @@ import { docConfigPlugin } from '../vite/plugin-config.ts'
 import { docThemePlugin } from '../vite/plugin-theme.ts'
 import { resolveTheme, clientLetterhead, letterheadLogoPath } from '../themes/resolve.ts'
 import { parseDocument } from '../markdown/frontmatter.ts'
+import { normalizeOrientation, pageDimensionsMm } from '../page-size.ts'
 import { readFileSync } from 'node:fs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -26,6 +27,7 @@ export async function exportPdf (options: ExportOptions) {
   const raw = readFileSync(docFile, 'utf-8')
   const { frontmatter } = parseDocument(raw)
   const theme = resolveTheme(frontmatter.theme || 'koumoul')
+  const orientation = normalizeOrientation(frontmatter.orientation)
 
   // Start a temporary Vite server
   const port = 15173 + Math.floor(Math.random() * 1000)
@@ -41,7 +43,8 @@ export async function exportPdf (options: ExportOptions) {
         port,
         hasLogo: !!theme.logo,
         hasLetterheadLogo: !!letterheadLogoPath(theme),
-        letterhead: clientLetterhead(theme)
+        letterhead: clientLetterhead(theme),
+        orientation
       }),
       docThemePlugin(theme)
     ],
@@ -88,10 +91,11 @@ export async function exportPdf (options: ExportOptions) {
     })
 
     console.log(`Generating PDF: ${outputPath}`)
+    const { width, height } = pageDimensionsMm(orientation)
     await page.pdf({
       path: outputPath,
-      width: '210mm',
-      height: '297mm',
+      width: `${width}mm`,
+      height: `${height}mm`,
       margin: { top: '0', right: '0', bottom: '0', left: '0' },
       printBackground: true
     })

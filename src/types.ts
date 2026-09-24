@@ -1,6 +1,9 @@
 /** Page layout: `report` opens on a title page, `letterhead` on a compact header band */
 export type DocLayout = 'report' | 'letterhead'
 
+/** Paper orientation — the whole document uses a single orientation */
+export type DocOrientation = 'portrait' | 'landscape'
+
 /** Issuer identity printed by the `letterhead` layout, as sent to the browser */
 export interface Letterhead {
   /** Issuer name, printed in bold next to the logo */
@@ -27,6 +30,8 @@ export interface Frontmatter {
   tocLevels?: number
   theme?: string
   layout?: DocLayout
+  /** Paper orientation, defaults to `portrait` */
+  orientation?: DocOrientation
   /** Document reference, `letterhead` layout only */
   reference?: string
   /** Place of writing — "Fait à <place>, le <date>", `letterhead` layout only */
@@ -40,6 +45,8 @@ export interface DocConfig {
   hasLogo: boolean
   hasLetterheadLogo: boolean
   letterhead?: Letterhead
+  /** Paper orientation, defaults to `portrait` */
+  orientation?: DocOrientation
 }
 
 export interface DocTheme {

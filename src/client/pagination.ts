@@ -8,11 +8,8 @@
  */
 
 import { ref, type Ref } from 'vue'
-
-/** Usable content height inside an A4 page (297mm - 15mm top - 20.5mm bottom for footer) */
-const CONTENT_HEIGHT_MM = 261.5
-/** Usable content width (210mm - 2 × 15mm) */
-const CONTENT_WIDTH_MM = 180
+import { pageDimensionsMm } from '../page-size.ts'
+import type { DocOrientation } from '../types.ts'
 
 /** A page is an array of block indices (into the blocks array) */
 export interface PageAssignment {
@@ -43,30 +40,32 @@ export interface PaginationState {
   paginate: (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement, firstPageOffset?: number) => void
 }
 
-export function usePagination (): PaginationState {
+export function usePagination (orientation: DocOrientation = 'portrait'): PaginationState {
   const contentPages = ref<PageAssignment[]>([])
   const tocPages = ref<TocPageAssignment[]>([])
   const totalPages = ref(0)
   const ready = ref(false)
 
   function paginate (contentEl: HTMLElement, blocks: string[], hasTitlePage: boolean, tocEl?: HTMLElement, firstPageOffset = 0): void {
+    const { contentWidth, contentHeight } = pageDimensionsMm(orientation)
+
     // Get all rendered block elements from the content container
     const elements = Array.from(contentEl.children) as HTMLElement[]
 
-    // Create off-screen measurer matching A4 content area width
+    // Create off-screen measurer matching the page content area width
     const measurer = document.createElement('div')
     measurer.style.cssText = `
       position: absolute;
       left: -9999px;
       top: 0;
-      width: ${CONTENT_WIDTH_MM}mm;
+      width: ${contentWidth}mm;
       visibility: hidden;
     `
     document.body.appendChild(measurer)
 
     // Get max content height in pixels
     const heightRef = document.createElement('div')
-    heightRef.style.height = `${CONTENT_HEIGHT_MM}mm`
+    heightRef.style.height = `${contentHeight}mm`
     measurer.appendChild(heightRef)
     const maxH = heightRef.getBoundingClientRect().height
     measurer.removeChild(heightRef)

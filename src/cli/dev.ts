@@ -10,6 +10,7 @@ import { docConfigPlugin } from '../vite/plugin-config.ts'
 import { docThemePlugin } from '../vite/plugin-theme.ts'
 import { resolveTheme, clientLetterhead, letterheadLogoPath } from '../themes/resolve.ts'
 import { parseDocument } from '../markdown/frontmatter.ts'
+import { normalizeOrientation } from '../page-size.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const packageRoot = resolve(__dirname, '../..')
@@ -24,6 +25,7 @@ export async function startDev (options: DevOptions) {
   const raw = readFileSync(docFile, 'utf-8')
   const { frontmatter } = parseDocument(raw)
   const theme = resolveTheme(frontmatter.theme || 'koumoul')
+  const orientation = normalizeOrientation(frontmatter.orientation)
 
   const server = await createServer({
     root: packageRoot,
@@ -37,7 +39,8 @@ export async function startDev (options: DevOptions) {
         port: options.port,
         hasLogo: !!theme.logo,
         hasLetterheadLogo: !!letterheadLogoPath(theme),
-        letterhead: clientLetterhead(theme)
+        letterhead: clientLetterhead(theme),
+        orientation
       }),
       docThemePlugin(theme)
     ],

@@ -54,6 +54,17 @@ theme: koumoul
 
 All fields are optional. Omitting `version` displays a draft warning. `tocLevels` controls how many heading levels are shown in the table of contents (default `2` — `h2` as level 1 and `h3` as level 2, since `h1` is reserved for the generated title page).
 
+### Orientation
+
+Documents are portrait A4 by default. Set `orientation: landscape` in the frontmatter to swap the sheet to 297 × 210 mm — handy for wide tables and diagrams. The whole document uses a single orientation.
+
+```yaml
+---
+title: Document en paysage
+orientation: landscape
+---
+```
+
 ### Layouts
 
 The `layout` field selects the shape of the document (default `report`):

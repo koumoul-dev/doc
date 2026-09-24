@@ -2,7 +2,7 @@
 
 ## Project
 
-`@koumoul/doc` — A Markdown-to-PDF document processor for A4 documents. Turns single Markdown files into polished, print-ready PDFs with title pages, table of contents, syntax-highlighted code, Mermaid diagrams, and proper pagination.
+`@koumoul/doc` — A Markdown-to-PDF document processor for A4 documents (portrait or landscape). Turns single Markdown files into polished, print-ready PDFs with title pages, table of contents, syntax-highlighted code, Mermaid diagrams, and proper pagination.
 
 ## Architecture
 
@@ -35,6 +35,7 @@ Key pattern: two-phase rendering — blocks are measured in a hidden container, 
 ## Key Files
 
 - `src/client/pagination.ts` — A4 measurement-based pagination logic
+- `src/page-size.ts` — A4 dimensions per orientation (portrait/landscape), shared by the client and the CLI
 - `src/client/DocumentRenderer.vue` — Main layout orchestrator
 - `src/vite/plugin-markdown.ts` — Markdown to HTML blocks virtual module
 - `src/markdown/pipeline.ts` — MarkdownIt setup with all extensions

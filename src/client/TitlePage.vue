@@ -39,7 +39,7 @@ function formatDate (dateStr: string | undefined): string {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 250mm;
+  min-height: calc(var(--doc-page-height) - 47mm);
   text-align: center;
 }
 

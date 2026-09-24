@@ -4,6 +4,7 @@ import { defineConfig } from '@playwright/test'
 const EXAMPLE_PORT = 5273
 const LETTERHEAD_PORT = 5274
 const LETTERHEAD_LONG_PORT = 5275
+const LANDSCAPE_PORT = 5276
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -29,6 +30,12 @@ export default defineConfig({
     {
       command: `node src/cli/index.ts dev tests/e2e/fixtures/letterhead-long.md --port ${LETTERHEAD_LONG_PORT}`,
       port: LETTERHEAD_LONG_PORT,
+      reuseExistingServer: !process.env.CI,
+      timeout: 15_000
+    },
+    {
+      command: `node src/cli/index.ts dev tests/e2e/fixtures/landscape.md --port ${LANDSCAPE_PORT}`,
+      port: LANDSCAPE_PORT,
       reuseExistingServer: !process.env.CI,
       timeout: 15_000
     }

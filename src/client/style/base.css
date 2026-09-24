@@ -1,3 +1,13 @@
+:root {
+  --doc-page-width: 210mm;
+  --doc-page-height: 297mm;
+}
+
+html[data-orientation="landscape"] {
+  --doc-page-width: 297mm;
+  --doc-page-height: 210mm;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +23,7 @@ body {
 }
 
 .document {
-  max-width: 210mm;
+  max-width: var(--doc-page-width);
   margin: 20px auto;
   display: flex;
   flex-direction: column;
@@ -22,8 +32,8 @@ body {
 
 .a4-page {
   position: relative;
-  width: 210mm;
-  height: 297mm;
+  width: var(--doc-page-width);
+  height: var(--doc-page-height);
   padding: 1.5cm;
   padding-bottom: 2cm;
   background: white;
@@ -63,7 +73,7 @@ body {
 .document-raw {
   visibility: hidden;
   position: absolute;
-  width: 210mm;
+  width: var(--doc-page-width);
   padding: 1.5cm;
   padding-bottom: 2cm;
 }

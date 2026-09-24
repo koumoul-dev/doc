@@ -4,6 +4,14 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './style/base.css'
 import './style/print.css'
+import { config } from 'virtual:doc-config'
+
+// `@page` cannot be scoped by attribute, so the landscape rule is appended last
+if (config.orientation === 'landscape') {
+  const style = document.createElement('style')
+  style.textContent = '@page { size: A4 landscape; }'
+  document.head.appendChild(style)
+}
 
 // Preserve scroll position across full-reload HMR
 if (import.meta.hot) {

@@ -68,7 +68,9 @@ const measureEl = ref<HTMLElement>()
 const contentEl = ref<HTMLElement>()
 const tocEl = ref<HTMLElement>()
 const headerEl = ref<HTMLElement>()
-const pagination = usePagination()
+const orientation = config.orientation ?? 'portrait'
+document.documentElement.dataset.orientation = orientation
+const pagination = usePagination(orientation)
 
 const isLetterhead = computed(() => frontmatter.layout === 'letterhead')
 const letterheadLegal = config.letterhead?.legal
