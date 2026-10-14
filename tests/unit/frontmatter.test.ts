@@ -42,6 +42,11 @@ Content`
     assert.equal(result.frontmatter.toc, false)
   })
 
+  it('keeps an unquoted date as a string', () => {
+    const result = parseDocument('---\ndate: 2025-01-15\n---\n')
+    assert.equal(result.frontmatter.date, '2025-01-15')
+  })
+
   it('strips a BOM and handles CRLF line endings', () => {
     const result = parseDocument('\uFEFF---\r\ntitle: Test\r\n---\r\nBody')
     assert.deepEqual(result.frontmatter, { title: 'Test' })
