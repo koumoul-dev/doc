@@ -21,6 +21,7 @@
 import { computed } from 'vue'
 import type { Frontmatter } from '../types.ts'
 import { config } from 'virtual:doc-config'
+import { formatDate } from './format-date.ts'
 
 const { frontmatter } = defineProps<{ frontmatter: Frontmatter }>()
 const hasLogo = config.hasLetterheadLogo
@@ -28,7 +29,7 @@ const logoUrl = '/@doc-theme-letterhead-logo'
 const letterhead = config.letterhead
 
 const dateLine = computed(() => {
-  const date = frontmatter.date ? new Date(frontmatter.date).toLocaleDateString('fr-FR') : ''
+  const date = formatDate(frontmatter.date)
   if (frontmatter.place && date) return `Fait à ${frontmatter.place}, le ${date}`
   if (frontmatter.place) return `Fait à ${frontmatter.place}`
   if (date) return `Le ${date}`

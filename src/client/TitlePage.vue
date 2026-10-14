@@ -22,15 +22,11 @@
 <script setup lang="ts">
 import type { Frontmatter } from '../types.ts'
 import { config } from 'virtual:doc-config'
+import { formatDate } from './format-date.ts'
 
 const { frontmatter } = defineProps<{ frontmatter: Frontmatter }>()
 const hasLogo = config.hasLogo
 const logoUrl = '/@doc-theme-logo'
-
-function formatDate (dateStr: string | undefined): string {
-  if (!dateStr) return ''
-  return new Date(dateStr).toLocaleDateString('fr-FR')
-}
 </script>
 
 <style scoped>
