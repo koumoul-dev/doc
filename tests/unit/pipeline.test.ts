@@ -15,6 +15,12 @@ describe('renderMarkdown', () => {
     assert.ok(html.includes('id="my-section"'))
   })
 
+  it('links bare domains', async () => {
+    const html = await renderMarkdown('See www.example.com and https://example.com/a')
+    assert.ok(html.includes('<a href="http://www.example.com">www.example.com</a>'))
+    assert.ok(html.includes('<a href="https://example.com/a">'))
+  })
+
   it('converts thematic breaks to page breaks', async () => {
     const html = await renderMarkdown('Before\n\n---\n\nAfter')
     assert.ok(html.includes('class="page-break"'))

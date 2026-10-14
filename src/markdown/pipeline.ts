@@ -1,5 +1,4 @@
-import MarkdownIt from 'markdown-it'
-import Token from 'markdown-it/lib/token.mjs'
+import markdownit, { type MarkdownIt } from 'markdown-it'
 import { applyContainers } from './containers.ts'
 import { applyMermaid } from './mermaid.ts'
 
@@ -19,11 +18,13 @@ export interface PipelineOptions {
 
 export async function createMarkdownPipeline (options: PipelineOptions = {}): Promise<MarkdownIt> {
   const numberHeadings = options.numberHeadings !== false
-  const md = new MarkdownIt({
+  const md = markdownit({
     html: true,
     linkify: true,
     typographer: true
   })
+  // linkify-it 6 stopped linking bare domains (www.example.com) by default
+  md.linkify.set({ fuzzyLink: true })
 
   // Shiki syntax highlighting
   const { createHighlighter } = await import('shiki')
@@ -90,7 +91,7 @@ export async function createMarkdownPipeline (options: PipelineOptions = {}): Pr
 
       // Prepend section number to heading content
       if (number && contentToken.children.length > 0) {
-        const numberToken = new Token('text', '', 0)
+        const numberToken = new markdownit.Token('text', '', 0)
         numberToken.content = `${number} - `
         contentToken.children.unshift(numberToken)
       }

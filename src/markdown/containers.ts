@@ -1,4 +1,4 @@
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 import container from 'markdown-it-container'
 
 const containerTypes = ['warning', 'info', 'tip', 'danger']

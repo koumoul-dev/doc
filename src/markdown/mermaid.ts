@@ -1,4 +1,4 @@
-import type MarkdownIt from 'markdown-it'
+import type { MarkdownIt } from 'markdown-it'
 
 export function applyMermaid (md: MarkdownIt): void {
   const defaultFence = md.renderer.rules.fence ||
