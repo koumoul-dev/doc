@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test'
 
 test('markdown content renders', async ({ page }) => {
   await page.goto('/')
-  const content = page.locator('.doc-content')
-  await expect(content).toBeVisible()
-  await expect(content.locator('h2#introduction')).toBeVisible()
+  // Each A4 page has its own .doc-content
+  await expect(page.locator('.doc-content').first()).toBeVisible()
+  await expect(page.locator('.doc-content h2#introduction')).toBeVisible()
 })
 
 test('headings have IDs for TOC linking', async ({ page }) => {
@@ -36,8 +36,10 @@ test('code blocks have syntax highlighting', async ({ page }) => {
 
 test('mermaid diagram renders', async ({ page }) => {
   await page.goto('/')
-  // Wait for mermaid to render SVG
-  await expect(page.locator('.mermaid-block svg')).toBeVisible({ timeout: 10_000 })
+  // The example has two valid diagrams and one with invalid syntax
+  await expect(page.locator('.mermaid-block svg')).toHaveCount(2, { timeout: 10_000 })
+  await expect(page.locator('.mermaid-block svg').first()).toBeVisible()
+  await expect(page.locator('.mermaid-block.mermaid-error')).toHaveCount(1)
 })
 
 test('thematic break (---) forces a page break', async ({ page }) => {
