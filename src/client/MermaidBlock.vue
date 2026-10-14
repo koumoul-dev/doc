@@ -19,7 +19,7 @@ onMounted(async () => {
   const blocks = document.querySelectorAll<HTMLElement>('pre.mermaid')
   if (blocks.length > 0) {
     const mermaid = (await import('mermaid')).default
-    mermaid.initialize({ startOnLoad: false, theme: 'default' })
+    mermaid.initialize({ startOnLoad: false, theme: 'default', look: 'classic', layout: 'dagre', flowchart: { minNodeWidth: 0, wrappingWidth: 200 } })
 
     // Render each diagram individually so a single block with invalid syntax
     // does not abort the whole render (which would leave pagination waiting
