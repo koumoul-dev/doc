@@ -1,3 +1,4 @@
+import { globalIgnores } from 'eslint/config'
 import neostandard from 'neostandard'
 
-export default neostandard({ ts: true, ignores: ['dist'] })
+export default [globalIgnores(['dist']), ...neostandard({ ts: true })]
