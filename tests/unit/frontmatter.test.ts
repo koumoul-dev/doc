@@ -41,4 +41,20 @@ Content`
     assert.equal(result.frontmatter.warning, 'Draft only')
     assert.equal(result.frontmatter.toc, false)
   })
+
+  it('strips a BOM and handles CRLF line endings', () => {
+    const result = parseDocument('\uFEFF---\r\ntitle: Test\r\n---\r\nBody')
+    assert.deepEqual(result.frontmatter, { title: 'Test' })
+    assert.equal(result.body, 'Body')
+  })
+
+  it('treats an empty or comment-only block as no frontmatter', () => {
+    assert.deepEqual(parseDocument('---\n---\nBody'), { frontmatter: {}, body: 'Body' })
+    assert.deepEqual(parseDocument('---\n# note\n---\nBody'), { frontmatter: {}, body: 'Body' })
+  })
+
+  it('does not treat a longer dash line as a delimiter', () => {
+    const raw = '----\ntitle: Test\n----'
+    assert.deepEqual(parseDocument(raw), { frontmatter: {}, body: raw })
+  })
 })
