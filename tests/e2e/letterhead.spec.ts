@@ -33,7 +33,7 @@ test('letterhead band uses the circular logo, not the title page one', async ({ 
 
   const img = page.locator('.letterhead-header img')
   await expect(img).toHaveAttribute('src', '/@doc-theme-letterhead-logo')
-  // The circular logo is 250×250; the title page logo is 1696×498
+  // The circular logo is 250×250; the title page logo is 1696×502
   const size = await img.evaluate((el) => ({
     width: (el as HTMLImageElement).naturalWidth,
     height: (el as HTMLImageElement).naturalHeight
